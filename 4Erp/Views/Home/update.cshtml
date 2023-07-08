@@ -139,9 +139,7 @@
             var code = $(this).parents("tr").find("input[name='edit_code']").val();
             var arDesc = $(this).parents("tr").find("input[name='edit_arDesc']").val();
             var enDesc = $(this).parents("tr").find("input[name='edit_enDesc']").val();
-            if (code === "" || arDesc === "" || enDesc === "") {
-
-            } else {
+        
                 var row = {
                     "RegionCode": code,
                     "RegionDescriptionAR": arDesc,
@@ -157,7 +155,7 @@
                 button.attr("id", "update");
                 button.text("تعديل");
 
-            }
+          
             // Create the row object.
 
         });
@@ -199,10 +197,9 @@
 
 
     </script>
-    <div>
-        <a class="btn btn-dark" asp-action="Index">عودة</a>
-    </div>
+
 </body>
+
 </html>
 <script>
     const submitBtn = document.getElementById('submitBtn');
