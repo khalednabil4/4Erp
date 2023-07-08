@@ -1,0 +1,222 @@
+﻿@model _4Erp.Models.CitiesAndRegions
+@{
+    ViewData["Title"] = "Add";
+    Layout = null;
+    string jsonData = ViewData["data"] as string;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title> المدن </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <style>
+        th, td {
+            text-align: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body dir="rtl">
+
+    <div class="container">
+        <div class="col text-end">
+            <h1>المدن</h1>
+        </div>
+        <div dir="ltr">
+     
+        </div>
+        <form asp-action="update" autocomplete="off">
+            <input type="number" asp-for="CityId" class="form-control w-40" style="display: none;">
+
+            <div class="form-group">
+                <label>كود : </label>
+                <input type="number" asp-for="CityCode" class="form-control w-40" required="">
+                <span asp-validation-for="CityCode" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>الوصف عربي : </label>
+                <input type="text" asp-for="CityDescriptionAR" class="form-control" required="">
+                <span asp-validation-for="CityDescriptionAR" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>الوصف الاجنبي : </label>
+                <input type="text" asp-for="CityDescriptionEn" class="form-control" required="">
+                <span asp-validation-for="CityDescriptionEn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">إيقاف التعامل : </label>
+                <input type="checkbox" asp-for="Status" class="form-check-input">
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="notes" class="form-check-label">ملاحظات : </label>
+                <textarea class="form-control" asp-for='Note' id="notes" rows="3"></textarea>
+                <span asp-validation-for="Note" class="text-danger"></span>
+
+            </div>
+            
+            <input type="text" value="@jsonData" name="tableDataInput" id="tableDataInput" style="display: none;">
+
+            <div dir="ltr" class="mt-3">
+
+                <button type="submit" class="mt-3 btn btn-success save-btn" >حفظ</button>
+            </div>
+             </form>
+            <br />
+            <table class="table table-bordered data-table">
+                <thead>
+                <th>المسلسل</th>
+                <th>كود</th>
+                <th>الوصف عربي</th>
+                <th>الوصف الاجنبي</th>
+                <th width="200px">العمليات</th>
+                </thead>
+                <tbody>
+                </tbody> 
+                <tfoot>
+                    <tr>
+                        <td>
+                            <a id="addRow" class="btn btn-success save-btn">إضافة</a>
+                        </td>
+                        <td colspan="4"></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+
+
+
+
+    </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var savedDataJSON = document.getElementById("tableDataInput").value;
+           
+            var savedData = JSON.parse(savedDataJSON);
+            var newdata = savedData["$values"];
+            console.log(savedDataJSON);
+
+            for (var i = 0; i < newdata.length; i++) {
+                var rowData = newdata[i];
+                var id = rowData["RegionId"];
+                var RegionCode = rowData.RegionCode;
+                var RegionDescriptionAR = rowData.RegionDescriptionAR;
+                var RegionDescriptionEn = rowData.RegionDescriptionEn;
+
+                var newRow = '<tr><td>' + id + '</td><td><input type="number" required="" class="form-control" name="edit_code" value="' + RegionCode + '"></td><td><input type="text" class="form-control" name="edit_arDesc" required="" value="' + RegionDescriptionAR + '"></td><td><input type="text" class="form-control" required="" name="edit_enDesc" value="' + RegionDescriptionEn + '"></td><td><button id="update" name="UPDATE" class="btn btn-info ms-2 me-2 btn-update">تعديل</button> <button id="delRow" class="btn ms-2 me-2 btn-danger btn-delete">حذف</button></td></tr>';
+
+                $(".data-table tbody").append(newRow);
+            }
+
+        });
+
+  
+        $("body").on("click", "#addRow", function () {
+            // var notes = $("textarea[name='notes']").val();
+            // var type = disCon ? "التعامل مغلق" : "التعامل مسموح";
+            var firstTh = $(".data-table thead th").first();
+            var firstThValue = firstTh.text();
+            var newRowIndex = 1;
+
+            var newRow = '<tr><td>' + 0 + '</td><td><input type="number" required="" class="form-control" name="edit_code" value=""></td><td><input type="text" class="form-control" name="edit_arDesc" required="" value=""></td><td><input type="text" class="form-control" required="" name="edit_enDesc" value=""></td><td><button id="saverow" name="Savedata" class="btn btn-info ms-2 me-2 btn-update">حفظ</button><button id="delRow" class="btn ms-2 me-2 btn-danger btn-delete">حذف</button></td></tr>';
+
+            $(".data-table tbody").append(newRow);
+
+        });
+
+        $("body").on("click", "#saverow", function () {
+            var savedDataJSON = document.getElementById("tableDataInput").value;
+            var savedData = JSON.parse(savedDataJSON);
+            var newdata = savedData["$values"];
+
+            // Get the code, arDesc, and enDesc values.
+            var code = $(this).parents("tr").find("input[name='edit_code']").val();
+            var arDesc = $(this).parents("tr").find("input[name='edit_arDesc']").val();
+            var enDesc = $(this).parents("tr").find("input[name='edit_enDesc']").val();
+            if (code === "" || arDesc === "" || enDesc === "") {
+
+            } else {
+                var row = {
+                    "RegionCode": code,
+                    "RegionDescriptionAR": arDesc,
+                    "RegionDescriptionEn": enDesc,
+                };
+
+                newdata.push(row);
+                savedData["$values"] = newdata;
+                document.getElementById("tableDataInput").value = JSON.stringify(savedData);
+                console.log(document.getElementById("tableDataInput").value);
+                var button = $(this).closest("tr").find("button[name='Savedata']");
+                button.attr("name", "UPDATE");
+                button.attr("id", "update");
+                button.text("تعديل");
+
+            }
+            // Create the row object.
+
+        });
+        $("body").on("click", "#update", function () {
+            var savedDataJSON = document.getElementById("tableDataInput").value;
+            var savedData = JSON.parse(savedDataJSON);
+            var newdata = savedData["$values"];
+             var index = $(this).parents("tr").index();
+             var $row = $(this).parents("tr");
+            var id = $row.find("td:eq(0)").text();
+            var code = $(this).parents("tr").find("input[name='edit_code']").val();
+            var arDesc = $(this).parents("tr").find("input[name='edit_arDesc']").val();
+            var enDesc = $(this).parents("tr").find("input[name='edit_enDesc']").val();
+            var row = {
+                "RegionId": id,
+                "RegionCode": code,
+                "RegionDescriptionAR": arDesc,
+                "RegionDescriptionEn": enDesc,
+            };
+           newdata[index] = row;
+            document.getElementById("tableDataInput").value = JSON.stringify(savedData);
+            console.log(document.getElementById("tableDataInput").value);
+        });
+
+        $("body").on("click", "#delRow", function () {
+
+            var savedDataJSON = document.getElementById("tableDataInput").value;
+            var savedData = JSON.parse(savedDataJSON);
+            var newdata = savedData["$values"];
+            var index = $(this).parents("tr").index();
+            console.log(index);
+            newdata.splice(index, 1);
+            savedData["$values"] = newdata;
+            document.getElementById("tableDataInput").value = JSON.stringify(savedData);
+            console.log(document.getElementById("tableDataInput").value);
+            $(this).parents("tr").remove();
+
+        });
+
+
+    </script>
+    <div>
+        <a class="btn btn-dark" asp-action="Index">عودة</a>
+    </div>
+</body>
+</html>
+<script>
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.addEventListener('click', test);
+    function test() {
+
+        Swal.fire({
+            imageUrl: 'https://cdn.dribbble.com/users/2973561/screenshots/5757826/media/221d6bfc1960ab98a7585fcc2a4d0181.gif',
+            imageAlt: 'A tall image',
+            showConfirmButton: false,
+            allowOutsideClick: false
+
+
+        })
+  
+    }
+</script>
